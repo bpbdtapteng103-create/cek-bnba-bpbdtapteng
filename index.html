@@ -15,7 +15,16 @@ input, select, button { width: 100%; padding: 10px; margin-top: 10px; }
 
 <div class="container">
   <h2>Cek Status Pendataan</h2>
-  <input type="file" id="fileInput" accept=".xlsx,.xls,.csv">
+ <script>
+fetch("bnba.csv")
+  .then(res => res.text())
+  .then(text => {
+    const rows = text.split("\n").map(r => r.split(","));
+    // di sini kamu bisa lanjutkan logika pencarian NIK/KK
+    console.log(rows);
+  });
+</script>
+
   
   <select id="tipeCari">
     <option value="nik">Cari berdasarkan NIK</option>
