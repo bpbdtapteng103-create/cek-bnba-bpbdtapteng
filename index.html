@@ -102,43 +102,41 @@
         });
       });
 
-    <script>
-  function cariData() {
-    const nikInput  = document.getElementById("searchNIK").value.trim();
-    const namaInput = document.getElementById("searchNama").value.trim().toLowerCase();
-    const kkInput   = document.getElementById("searchKK").value.trim();
+    function cariData() {
+      const nikInput  = document.getElementById("searchNIK").value.trim();
+      const namaInput = document.getElementById("searchNama").value.trim().toLowerCase();
+      const kkInput   = document.getElementById("searchKK").value.trim();
 
-    let hasil = "<p>Data tidak ditemukan</p>";
-    let matches = [];
+      let hasil = "<p>Data tidak ditemukan</p>";
+      let matches = [];
 
-    for (let row of dataBNBA) {
-      const nik  = row["NIK"]?.trim();
-      const nama = row["NAMA"]?.toLowerCase();
-      const kk   = row["NO. KK"]?.trim();
+      for (let row of dataBNBA) {
+        const nik  = row["NIK"]?.trim();
+        const nama = row["NAMA"]?.toLowerCase();
+        const kk   = row["NO. KK"]?.trim();
 
-      if (
-        (nikInput && nik === nikInput) ||
-        (namaInput && nama.includes(namaInput)) ||
-        (kkInput && kk === kkInput)
-      ) {
-        matches.push(row);
-      }
-    }
-
-    if (matches.length > 0) {
-      hasil = "<h3>Hasil Pencarian:</h3>";
-      for (let row of matches) {
-        let tableRows = "";
-        for (let key in row) {
-          tableRows += `<tr><th>${key}</th><td>${row[key]}</td></tr>`;
+        if (
+          (nikInput && nik === nikInput) ||
+          (namaInput && nama.includes(namaInput)) ||
+          (kkInput && kk === kkInput)
+        ) {
+          matches.push(row);
         }
-        hasil += `<table>${tableRows}</table><br>`;
       }
+
+      if (matches.length > 0) {
+        hasil = "<h3>Hasil Pencarian:</h3>";
+        for (let row of matches) {
+          let tableRows = "";
+          for (let key in row) {
+            tableRows += `<tr><th>${key}</th><td>${row[key]}</td></tr>`;
+          }
+          hasil += `<table>${tableRows}</table><br>`;
+        }
+      }
+
+      document.getElementById("hasil").innerHTML = hasil;
     }
-
-    document.getElementById("hasil").innerHTML = hasil;
-  }
-</script>
-
+  </script>
 </body>
 </html>
