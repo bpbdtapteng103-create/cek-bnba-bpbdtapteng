@@ -119,20 +119,12 @@
           (namaInput && nama.includes(namaInput)) ||
           (kkInput && kk === kkInput)
         ) {
-          hasil = `
-            <table>
-              <tr><th>NO</th><td>${row["NO"]}</td></tr>
-              <tr><th>Nama</th><td>${row["NAMA"]}</td></tr>
-              <tr><th>Desa/Kelurahan</th><td>${row["DESA/KELURAHAN"]}</td></tr>
-              <tr><th>Kecamatan</th><td>${row["KECAMATAN"]}</td></tr>
-              <tr><th>NIK</th><td>${nik}</td></tr>
-              <tr><th>Nomor KK</th><td>${kk}</td></tr>
-              <tr><th>Koordinat</th><td>${row["KOORDINAT"]}</td></tr>
-              <tr><th>Kerusakan</th><td>${row["KERUSAKAN"]}</td></tr>
-              <tr><th>Keterangan</th><td>${row["KETERANGAN"]}</td></tr>
-              <tr><th>Input Data</th><td>${row["INPUT DATA"]}</td></tr>
-            </table>
-          `;
+          // Buat tabel otomatis dari semua header
+          let tableRows = "";
+          for (let key in row) {
+            tableRows += `<tr><th>${key}</th><td>${row[key]}</td></tr>`;
+          }
+          hasil = `<table>${tableRows}</table>`;
           break;
         }
       }
