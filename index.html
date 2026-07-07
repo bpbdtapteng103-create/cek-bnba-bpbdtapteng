@@ -1,55 +1,144 @@
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<script>
-  let dataBNBA = [];
-
-  // Fetch file CSV dari repository
-  fetch("DATA BNBA_123.csv")
-    .then(res => res.text())
-    .then(text => {
-      Papa.parse(text, {
-        header: true,
-        skipEmptyLines: true,
-        complete: function(results) {
-          dataBNBA = results.data;
-          console.log("Data BNBA siap:", dataBNBA);
-        }
-      });
-    });
-
-  function cariData() {
-    const nikInput  = document.getElementById("searchNIK").value.trim();
-    const namaInput = document.getElementById("searchNama").value.trim().toLowerCase();
-    const kkInput   = document.getElementById("searchKK").value.trim();
-
-    let hasil = "<p>Data tidak ditemukan</p>";
-
-    for (let row of dataBNBA) {
-      const nik  = row["NIK"]?.trim();
-      const nama = row["NAMA"]?.toLowerCase();
-      const kk   = row["NO. KK"]?.trim();
-
-      if (
-        (nikInput && nik === nikInput) ||
-        (namaInput && nama.includes(namaInput)) ||
-        (kkInput && kk === kkInput)
-      ) {
-        hasil = `
-          <table>
-            <tr><th>NIK</th><td>${nik}</td></tr>
-            <tr><th>Nama</th><td>${row["NAMA"]}</td></tr>
-            <tr><th>Nomor KK</th><td>${kk}</td></tr>
-            <tr><th>Desa/Kelurahan</th><td>${row["DESA/KELURAHAN"]}</td></tr>
-            <tr><th>Kecamatan</th><td>${row["KECAMATAN"]}</td></tr>
-            <tr><th>Koordinat</th><td>${row["KOORDINAT"]}</td></tr>
-            <tr><th>Kerusakan</th><td>${row["KERUSAKAN"]}</td></tr>
-            <tr><th>Keterangan</th><td>${row["KETERANGAN"]}</td></tr>
-            <tr><th>Input Data</th><td>${row["INPUT DATA"]}</td></tr>
-          </table>
-        `;
-        break;
-      }
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Cek Data BNBA</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 20px;
     }
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .form-container {
+      max-width: 600px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      margin-top: 15px;
+      width: 100%;
+      padding: 10px;
+      background: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #2980b9;
+    }
+    #hasil {
+      margin-top: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background: #3498db;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <h2>Cek Data BNBA</h2>
+  <div class="form-container">
+    <label for="searchNIK">NIK:</label>
+    <input type="text" id="searchNIK" placeholder="Masukkan NIK">
 
-    document.getElementById("hasil").innerHTML = hasil;
-  }
-</script>
+    <label for="searchNama">Nama:</label>
+    <input type="text" id="searchNama" placeholder="Masukkan Nama">
+
+    <label for="searchKK">Nomor KK:</label>
+    <input type="text" id="searchKK" placeholder="Masukkan Nomor KK">
+
+    <button onclick="cariData()">Cari</button>
+    <div id="hasil"></div>
+  </div>
+
+  <!-- PapaParse untuk parsing CSV -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script>
+    let dataBNBA = [];
+
+    // Fetch file CSV dari repository
+    fetch("DATA BNBA_123.csv")
+      .then(res => res.text())
+      .then(text => {
+        Papa.parse(text, {
+          header: true,
+          skipEmptyLines: true,
+          complete: function(results) {
+            dataBNBA = results.data;
+            console.log("Data BNBA siap:", dataBNBA);
+          }
+        });
+      });
+
+    function cariData() {
+      const nikInput  = document.getElementById("searchNIK").value.trim();
+      const namaInput = document.getElementById("searchNama").value.trim().toLowerCase();
+      const kkInput   = document.getElementById("searchKK").value.trim();
+
+      let hasil = "<p>Data tidak ditemukan</p>";
+
+      for (let row of dataBNBA) {
+        const nik  = row["NIK"]?.trim();
+        const nama = row["NAMA"]?.toLowerCase();
+        const kk   = row["NO. KK"]?.trim();
+
+        if (
+          (nikInput && nik === nikInput) ||
+          (namaInput && nama.includes(namaInput)) ||
+          (kkInput && kk === kkInput)
+        ) {
+          hasil = `
+            <table>
+              <tr><th>NO</th><td>${row["NO"]}</td></tr>
+              <tr><th>Nama</th><td>${row["NAMA"]}</td></tr>
+              <tr><th>Desa/Kelurahan</th><td>${row["DESA/KELURAHAN"]}</td></tr>
+              <tr><th>Kecamatan</th><td>${row["KECAMATAN"]}</td></tr>
+              <tr><th>NIK</th><td>${nik}</td></tr>
+              <tr><th>Nomor KK</th><td>${kk}</td></tr>
+              <tr><th>Koordinat</th><td>${row["KOORDINAT"]}</td></tr>
+              <tr><th>Kerusakan</th><td>${row["KERUSAKAN"]}</td></tr>
+              <tr><th>Keterangan</th><td>${row["KETERANGAN"]}</td></tr>
+              <tr><th>Input Data</th><td>${row["INPUT DATA"]}</td></tr>
+            </table>
+          `;
+          break;
+        }
+      }
+
+      document.getElementById("hasil").innerHTML = hasil;
+    }
+  </script>
+</body>
+</html>
