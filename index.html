@@ -89,7 +89,7 @@
     let dataBNBA = [];
 
     // Fetch file CSV dari repository
-    fetch("DATA BNBA_123.csv")
+    fetch("DATA_BNBA_123.csv")
       .then(res => res.text())
       .then(text => {
         Papa.parse(text, {
