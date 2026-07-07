@@ -16,7 +16,7 @@ input, select, button { width: 100%; padding: 10px; margin-top: 10px; }
 <div class="container">
   <h2>Cek Status Pendataan</h2>
  <script>
-fetch("bnba.csv")
+fetch("DATA BNBA_123.csv")
   .then(res => res.text())
   .then(text => {
     const rows = text.split("\n").map(r => r.split(","));
