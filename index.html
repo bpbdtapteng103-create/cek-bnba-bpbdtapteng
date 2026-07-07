@@ -1,113 +1,40 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>Cek Data BNBA Multi-Sheet</title>
-<style>
-body { font-family: Arial; background: #f5f5f5; }
-.container { width: 500px; margin: 50px auto; background: white; padding: 20px; border-radius: 10px; }
-input, select, button { width: 100%; padding: 10px; margin-top: 10px; }
-#hasil { margin-top: 20px; }
-.highlight { color: red; font-weight: bold; }
-</style>
+  <meta charset="UTF-8">
+  <title>Cek Data BNBA</title>
 </head>
 <body>
-
-<div class="container">
-  <h2>Cek Status Pendataan</h2>
- <script>
-fetch("DATA BNBA_123.csv")
-  .then(res => res.text())
-  .then(text => {
-    const rows = text.split("\n").map(r => r.split(","));
-    // di sini kamu bisa lanjutkan logika pencarian NIK/KK
-    console.log(rows);
-  });
-</script>
-
-  
-  <select id="tipeCari">
-    <option value="nik">Cari berdasarkan NIK</option>
-    <option value="nama">Cari berdasarkan Nama</option>
-    <option value="kk">Cari berdasarkan No. KK</option>
-  </select>
-  
-  <input type="text" id="keyword" placeholder="Masukkan kata kunci">
-  <button onclick="cekData()">Cek Data</button>
-  
+  <h2>Cek Data BNBA</h2>
+  <input type="text" id="searchNIK" placeholder="Masukkan NIK">
+  <button onclick="cariData()">Cari</button>
   <div id="hasil"></div>
-</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script>
-let workbookGlobal = null;
+  <script>
+    let rows = [];
 
-document.getElementById("fileInput").addEventListener("change", function(e) {
-  const file = e.target.files[0];
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const data = new Uint8Array(e.target.result);
-    workbookGlobal = XLSX.read(data, {type: 'array'});
-    alert("✅ File BNBA berhasil dibaca. Silakan pilih tipe pencarian dan masukkan kata kunci.");
-  };
-  reader.readAsArrayBuffer(file);
-});
+    // Fetch file CSV dari repository
+    fetch("DATA BNBA_123.csv")
+      .then(res => res.text())
+      .then(text => {
+        rows = text.split("\n").map(r => r.split(","));
+        console.log("Data BNBA siap dipakai:", rows);
+      });
 
-function cekData() {
-  const keyword = document.getElementById("keyword").value.trim().toLowerCase();
-  const tipeCari = document.getElementById("tipeCari").value;
-  const hasilDiv = document.getElementById("hasil");
+    function cariData() {
+      const nikInput = document.getElementById("searchNIK").value.trim();
+      let hasil = "Data tidak ditemukan";
 
-  if (!workbookGlobal) {
-    hasilDiv.innerHTML = "<span style='color:red'>❌ Belum ada file BNBA yang diupload.</span>";
-    return;
-  }
-
-  let results = [];
-
-  // Tentukan kolom berdasarkan tipe pencarian
-  let colIndex;
-  if (tipeCari === "nik") colIndex = 4;       // kolom E
-  else if (tipeCari === "nama") colIndex = 1; // kolom B
-  else if (tipeCari === "kk") colIndex = 5;   // kolom F
-
-  // Loop semua sheet
-  for (const sheetName of workbookGlobal.SheetNames) {
-    const sheet = workbookGlobal.Sheets[sheetName];
-    const data = XLSX.utils.sheet_to_json(sheet, {header:1});
-
-    for (let i=1; i<data.length; i++) {
-      if (data[i][colIndex] && data[i][colIndex].toString().toLowerCase().includes(keyword)) {
-        results.push({row: data[i], sheet: sheetName});
+      // Asumsi kolom pertama berisi NIK
+      for (let i = 1; i < rows.length; i++) {
+        if (rows[i][0] === nikInput) {
+          hasil = "NIK: " + rows[i][0] + "<br>Nama: " + rows[i][1] + "<br>Alamat: " + rows[i][2];
+          break;
+        }
       }
+
+      document.getElementById("hasil").innerHTML = hasil;
     }
-  }
-
-  if (results.length > 0) {
-    let html = `<b>✅ Ditemukan ${results.length} hasil</b><br><br>`;
-    results.forEach(r => {
-      const kerusakan = r.row[7] || "-";
-      const highlight = kerusakan.toLowerCase().includes("berat") ? "highlight" : "";
-      html += `
-        <div style="margin-bottom:15px; border-bottom:1px solid #ccc; padding-bottom:10px;">
-          <b>Sheet:</b> ${r.sheet}<br>
-          Nama : ${r.row[1]}<br>
-          Desa : ${r.row[2]}<br>
-          Kecamatan : ${r.row[3]}<br>
-          NIK : ${r.row[4]}<br>
-          No. KK : ${r.row[5]}<br>
-          Kerusakan : <span class="${highlight}">${kerusakan}</span><br>
-          Keterangan : ${r.row[8] || "-"}<br>
-          Input Data : ${r.row[9] || "-"}
-        </div>
-      `;
-    });
-    hasilDiv.innerHTML = html;
-  } else {
-    hasilDiv.innerHTML = "<span style='color:red'>❌ Data tidak ditemukan di semua sheet.</span>";
-  }
-}
-</script>
-
+  </script>
 </body>
 </html>
