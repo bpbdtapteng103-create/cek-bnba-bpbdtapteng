@@ -2,6 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cek Data BNBA</title>
   <style>
     body {font-family: Arial, sans-serif; background: #f4f6f9; padding: 20px;}
@@ -38,20 +39,16 @@
   <script>
     let dataBNBA = [];
 
-    // Fetch file CSV
-  fetch("DATA_BNBA_123.csv")
-  .then(res => {
-    console.log("Status fetch:", res.status);
-    return res.text();
-  })
-  .then(text => {
-    console.log("Isi file:", text.slice(0,200)); // cek 200 karakter pertama
+    // Fetch file CSV dengan timestamp agar tidak cache
+    fetch("DATA_BNBA_123.csv?nocache=" + new Date().getTime())
+      .then(res => res.text())
+      .then(text => {
         Papa.parse(text, {
           header: true,
           skipEmptyLines: true,
           complete: function(results) {
             dataBNBA = results.data;
-            console.log("Data BNBA siap:", dataBNBA); // cek di console browser
+            console.log("Data BNBA siap:", dataBNBA);
           }
         });
       });
